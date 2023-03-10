@@ -1,5 +1,5 @@
 import tensorflow as tf
-from numba import cuda as numcuda
+from numba import cuda 
 
 import sys
 import os
@@ -10,7 +10,13 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from libs._base_logger import logger
-def check_gpu():
+
+def check_gpu() -> bool:
+    '''
+    This function checks if the GPU is available and if CUDA is installed
+    :return: `True` if the GPU is available and CUDA is installed else `False`
+    :rtype: bool
+    '''
 
     devices = tf.config.list_physical_devices()
     if devices:
@@ -21,7 +27,7 @@ def check_gpu():
             physical_gpus = tf.config.list_logical_devices('GPU')
             logger.info("Num GPUs Available: {}".format(len(physical_gpus)))
             if len(physical_gpus) > 0:
-                device = numcuda.get_current_device()
+                device = cuda.get_current_device()
                 if device is not None:
                     device.reset()
                     logger.info(f"Device name: {device.name} ")
@@ -30,6 +36,7 @@ def check_gpu():
                         return True
                     else:
                         logger.error("CUDA is not available !")
+                        logger.info("Have you installed CUDA ?\n or maybe old GPU drivers ?")
                         return False
                 else:
                     logger.error("No device found")
